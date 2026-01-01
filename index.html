@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tài Xỉu Full Mobile</title>
+  <button onclick="toggleEffect()" style="margin-top:8px">
+  🎨 Hiệu ứng: <span id="fxStatus">BẬT</span>
+</button>
 <link rel="manifest" href="manifest.json">
 <script>
 if ("serviceWorker" in navigator) {
@@ -21,6 +24,9 @@ button{padding:12px;margin:5px;font-size:16px;border-radius:10px;border:none}
 </head>
 <body>
 <h2>🎲 TÀI XỈU – APP</h2>
+  <button onclick="toggleEffect()" style="margin-top:8px">
+  🎨 Hiệu ứng: <span id="fxStatus">BẬT</span>
+</button>
 <div class="box">
 <button class="choice" onclick="pick('TÀI',this)">TÀI</button>
 <button class="choice" onclick="pick('XỈU',this)">XỈU</button>
