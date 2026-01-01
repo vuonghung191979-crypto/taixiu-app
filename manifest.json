@@ -1,0 +1,20 @@
+{
+  "name": "Tai Xiu Simulator",
+  "short_name": "TaiXiu",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#ff9800",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/616/616554.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/616/616554.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
