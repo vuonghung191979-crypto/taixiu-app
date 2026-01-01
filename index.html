@@ -10,12 +10,13 @@ body{margin:0;font-family:system-ui;background:#0f172a;color:#e5e7eb}
 .app{max-width:420px;margin:auto;padding:16px}
 h1{text-align:center}
 .card{background:#111827;border-radius:14px;padding:16px;margin:12px 0}
-.row{display:flex;gap:8px}
-button{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+button{padding:10px;border-radius:10px;border:none;font-weight:700}
 .green{background:#22c55e}
 .blue{background:#38bdf8}
 .gray{background:#334155;color:#fff}
 .orange{background:#f59e0b}
+.bet{background:#1e293b;color:#fff}
 .center{text-align:center}
 .dice{font-size:36px}
 .flash{animation:f .5s}@keyframes f{0%{opacity:.2}100%{opacity:1}}
@@ -29,34 +30,41 @@ input{width:100%;padding:10px;border-radius:10px;border:1px solid #334155;backgr
 <h1>🎲 Tài Xỉu (Giải trí)</h1>
 
 <div class="card center">
-Xu giải trí: <b id="balance">1000</b>
+Xu giải trí: <b id="balance">1000000</b>
 <div class="small">* Không tiền thật</div>
 </div>
 
 <div class="card center">
 <div id="result" class="dice">—</div>
 <div id="sum" class="small"></div>
-<div id="bot" class="small">🤖 Bot AI: chưa có dữ liệu</div>
 <div id="botNext" class="small">🔮 Bot dự đoán: chưa có dữ liệu</div>
 </div>
 
 <div class="card">
-<input id="betAmount" type="number" value="50" min="1">
+<b>💰 Chọn mức cược</b>
 <div class="row" style="margin-top:8px">
-<button class="green" onclick="choose('TAI')">TÀI</button>
-<button class="blue" onclick="choose('XIU')">XỈU</button>
+<button class="bet" onclick="setBet(1000)">1K</button>
+<button class="bet" onclick="setBet(10000)">10K</button>
+<button class="bet" onclick="setBet(50000)">50K</button>
+<button class="bet" onclick="setBet(100000)">100K</button>
+<button class="bet" onclick="setBet(500000)">500K</button>
+<button class="bet" onclick="setBet(5000000)">5M</button>
+<button class="bet" onclick="setBet(50000000)">50M</button>
+</div>
+<input id="betAmount" type="number" placeholder="Hoặc nhập cược tự do">
+</div>
+
+<div class="card">
+<div class="row">
+<button class="green" style="flex:1" onclick="choose('TAI')">TÀI</button>
+<button class="blue" style="flex:1" onclick="choose('XIU')">XỈU</button>
 </div>
 </div>
 
 <div class="card">
 <div class="row">
-<button class="gray" onclick="roll()">🎲 LẮC</button>
-<button class="orange" onclick="resetGame()">↺ Reset</button>
-</div>
-<div class="row" style="margin-top:8px">
-<button class="gray" onclick="toggleEffect()">🎨 <span id="fx">BẬT</span></button>
-<button class="gray" onclick="toggleImage()">🖼️ <span id="img">BẬT</span></button>
-<button class="gray" onclick="toggleSound()">🔊 <span id="snd">BẬT</span></button>
+<button class="gray" style="flex:1" onclick="roll()">🎲 LẮC</button>
+<button class="orange" style="flex:1" onclick="resetGame()">↺ Reset</button>
 </div>
 </div>
 </div>
@@ -64,11 +72,15 @@ Xu giải trí: <b id="balance">1000</b>
 <audio id="sound" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="></audio>
 
 <script>
-let balance=1000, choice=null;
-let effect=true, image=true, sound=true;
+let balance=1000000;
+let choice=null;
 let history=[];
 
 const $=id=>document.getElementById(id);
+
+function setBet(v){
+  betAmount.value=v;
+}
 
 function choose(c){
   choice=c;
@@ -90,42 +102,27 @@ function roll(){
 
   history.push(rs);
   if(history.length>20) history.shift();
-
-  updateBot();
   predictNext();
 
-  if(sound) $("sound").play().catch(()=>{});
-  if(effect){
-    result.classList.remove("flash");
-    void result.offsetWidth;
-    result.classList.add("flash");
-  }
+  $("sound").play().catch(()=>{});
 
-  result.innerText=image?"🎲🎲🎲":"...";
+  result.classList.remove("flash");
+  void result.offsetWidth;
+  result.classList.add("flash");
+
+  result.innerText="🎲🎲🎲";
   setTimeout(()=>{
-    result.innerText=image?`${d1} ${d2} ${d3}`:"Xong";
+    result.innerText=`${d1} ${d2} ${d3}`;
     sum.innerText=`Tổng ${total} → ${rs==="TAI"?"TÀI":"XỈU"}`;
     balance+=choice===rs?bet:-bet;
     $("balance").innerText=balance;
     choice=null;
-  },effect?500:0);
-}
-
-function updateBot(){
-  if(history.length<5){
-    bot.innerText="🤖 Bot AI: cần thêm dữ liệu";
-    return;
-  }
-  let tai=history.filter(x=>x==="TAI").length;
-  let xiu=history.filter(x=>x==="XIU").length;
-  let pick=tai>xiu?"TÀI":"XỈU";
-  let rate=Math.round(Math.max(tai,xiu)/history.length*100);
-  bot.innerText=`🤖 Bot AI phân tích: ${pick} (${rate}%)`;
+  },400);
 }
 
 function predictNext(){
   if(history.length<5){
-    botNext.innerText="🔮 Bot dự đoán: chưa đủ dữ liệu";
+    botNext.innerText="🔮 Bot dự đoán: cần thêm dữ liệu";
     return;
   }
   let recent=history.slice(-5);
@@ -136,17 +133,12 @@ function predictNext(){
   botNext.innerText=`🔮 Bot dự đoán ván tới: ${predict} (${rate}%)`;
 }
 
-function toggleEffect(){effect=!effect;fx.innerText=effect?"BẬT":"TẮT"}
-function toggleImage(){image=!image;img.innerText=image?"BẬT":"TẮT"}
-function toggleSound(){sound=!sound;snd.innerText=sound?"BẬT":"TẮT"}
-
 function resetGame(){
-  balance=1000;
+  balance=1000000;
   history=[];
   $("balance").innerText=balance;
   result.innerText="—";
   sum.innerText="";
-  bot.innerText="🤖 Bot AI: chưa có dữ liệu";
   botNext.innerText="🔮 Bot dự đoán: chưa có dữ liệu";
 }
 </script>
