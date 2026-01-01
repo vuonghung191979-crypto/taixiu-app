@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tài Xỉu 3D – Dự đoán tỉ lệ</title>
+<title>Tài Xỉu 3D – Mở Bát</title>
 <style>
 body{
   margin:0;
@@ -33,6 +33,8 @@ button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;transi
 .tai{background:#22c55e;}
 .xiu{background:#38bdf8;}
 .disabled{opacity:.5;pointer-events:none;}
+
+/* Dice container 3D */
 .dice-container{
   position: relative;
   width: 140px;
@@ -42,18 +44,29 @@ button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;transi
 }
 .dice{
   position: absolute;
-  top: 50px;
-  left: 50px;
-  width: 40px;
-  height: 40px;
-  font-size: 30px;
+  top:50px;
+  left:50px;
+  width:40px;
+  height:40px;
+  font-size:30px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   transition: transform 0.3s ease-out;
 }
+.dice span{
+  font-size:14px;
+  margin-top:4px;
+}
+
+/* Countdown */
 .countdown{
   font-size: 14px;
   margin-top: 4px;
   color: #facc15;
 }
+
+/* Highlight winner */
 .winner{
   text-shadow: 0 0 10px #facc15;
   color: #facc15;
@@ -62,6 +75,8 @@ button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;transi
 .loser{
   opacity: 0.3;
 }
+
+/* Tài/Xỉu hai bên */
 #sideOptions{
   display:flex;
   justify-content:space-between;
@@ -81,7 +96,7 @@ button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;transi
 <body>
 
 <div class="app">
-  <h1>🎲 TÀI XỈU 3D – Bot tỉ lệ</h1>
+  <h1>🎲 TÀI XỈU 3D – Mở Bát</h1>
 
   <div class="card center">
     <div class="balance">Xu: <span id="balance">1,000,000,000</span></div>
@@ -94,9 +109,9 @@ button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;transi
       <span id="sideXiu">XỈU</span>
     </div>
     <div class="dice-container" id="diceContainer">
-      <div id="dice1" class="dice">🎲</div>
-      <div id="dice2" class="dice">🎲</div>
-      <div id="dice3" class="dice">🎲</div>
+      <div id="dice1" class="dice"><div>🎲</div><span>—</span></div>
+      <div id="dice2" class="dice"><div>🎲</div><span>—</span></div>
+      <div id="dice3" class="dice"><div>🎲</div><span>—</span></div>
     </div>
     <div id="countdown" class="countdown">5s</div>
     <div id="result" class="small"></div>
@@ -128,6 +143,10 @@ button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;transi
   </div>
 </div>
 
+<audio id="soundRoll" src="https://freesound.org/data/previews/341/341695_6249637-lq.mp3"></audio>
+<audio id="soundWin" src="https://freesound.org/data/previews/458/458545_1022659-lq.mp3"></audio>
+<audio id="soundLose" src="https://freesound.org/data/previews/170/170206_2437358-lq.mp3"></audio>
+
 <script>
 document.addEventListener("DOMContentLoaded",()=>{
 
@@ -144,17 +163,18 @@ document.addEventListener("DOMContentLoaded",()=>{
   const customBet = $("customBet");
   const botDisplay = $("bot");
 
+  const soundRoll = $("soundRoll");
+  const soundWin = $("soundWin");
+  const soundLose = $("soundLose");
+
   function setBet(v){
     bet=v;
     $("betShow").innerText=v.toLocaleString();
   }
 
-  // Bot dự đoán theo tỉ lệ
   function botPrediction(){
-    // Tỉ lệ TÀI/XỈU: 70% TÀI, 30% XỈU (có thể chỉnh)
     const ratioTai = 0.7;
-    const rand = Math.random();
-    return rand<ratioTai?"TAI":"XIU";
+    return Math.random()<ratioTai?"TAI":"XIU";
   }
 
   function choose(c){
@@ -184,17 +204,27 @@ document.addEventListener("DOMContentLoaded",()=>{
     sideXiu.classList.remove("winner","loser");
     sideTai.style.opacity=sideXiu.style.opacity=1;
 
+    // reset vị trí xúc xắc
+    diceElems.forEach(d=>{
+      d.style.transform="translate(0,0) rotateX(0deg) rotateY(0deg)";
+      d.querySelector("span").innerText="—";
+    });
+
+    soundRoll.currentTime=0;
+    soundRoll.play();
+
     let countdown = $("countdown");
     let seconds = 5;
     let interval = setInterval(()=>{
       seconds--;
       countdown.innerText=`${seconds}s`;
 
+      // di chuyển random
       diceElems.forEach(d=>{
-        let rx = Math.random()*720;
-        let ry = Math.random()*720;
-        let tx = Math.random()*80;
-        let ty = Math.random()*80;
+        let rx=Math.random()*720;
+        let ry=Math.random()*720;
+        let tx=Math.random()*80-40;
+        let ty=Math.random()*80-40;
         d.style.transform=`translate(${tx}px,${ty}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
       });
 
@@ -206,21 +236,32 @@ document.addEventListener("DOMContentLoaded",()=>{
   }
 
   function finishRoll(){
-    let d1 = 1+Math.floor(Math.random()*6);
-    let d2 = 1+Math.floor(Math.random()*6);
-    let d3 = 1+Math.floor(Math.random()*6);
-    let total = d1+d2+d3;
+    soundRoll.pause();
+    let values = [1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6)];
+    let total = values[0]+values[1]+values[2];
     let rs = total>=11?"TAI":"XIU";
 
-    diceElems[0].innerText="🎲 "+d1;
-    diceElems[1].innerText="🎲 "+d2;
-    diceElems[2].innerText="🎲 "+d3;
-    diceElems.forEach(d=>d.style.transform="translate(0,0) rotateX(0deg) rotateY(0deg)");
+    // xếp tam giác
+    const positions = [
+      {x:0, y:-30}, // top
+      {x:-30, y:30}, // bottom-left
+      {x:30, y:30} // bottom-right
+    ];
+    diceElems.forEach((d,i)=>{
+      d.querySelector("div").innerText="🎲";
+      d.querySelector("span").innerText=values[i];
+      d.style.transform=`translate(${positions[i].x}px,${positions[i].y}px) rotateX(0deg) rotateY(0deg)`;
+    });
 
     $("result").innerText=`Tổng ${total} → ${rs==="TAI"?"TÀI":"XỈU"}`;
 
-    if(rs===choice) balance += bet*2;
-    else balance -= bet;
+    if(rs===choice){
+      balance+=bet*2;
+      soundWin.currentTime=0; soundWin.play();
+    } else {
+      balance-=bet;
+      soundLose.currentTime=0; soundLose.play();
+    }
     $("balance").innerText=balance.toLocaleString();
 
     if(rs==="TAI"){
@@ -244,9 +285,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   btnTai.addEventListener("click",()=>choose("TAI"));
   btnXiu.addEventListener("click",()=>choose("XIU"));
   document.querySelectorAll(".bet").forEach(btn=>btn.addEventListener("click",()=>setBet(Number(btn.dataset.bet))));
-
 });
 </script>
-
 </body>
 </html>
