@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tài Xỉu – Giải trí</title>
+<title>Tài Xỉu 3D – Giải trí</title>
 <style>
 body{
   margin:0;
@@ -16,10 +16,7 @@ body{
   margin:auto;
   padding:16px;
 }
-h1{
-  text-align:center;
-  margin:10px 0;
-}
+h1{text-align:center;margin:10px 0;}
 .card{
   background:#0f172a;
   border-radius:16px;
@@ -31,39 +28,49 @@ h1{
 .small{font-size:12px;color:#94a3b8;margin-top:6px;}
 .bot{margin-top:8px;font-size:13px;color:#facc15;}
 .row{display:flex;gap:8px;flex-wrap:wrap;}
-button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;}
+button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;transition:0.3s;}
 .bet{background:#1e293b;color:#fff;}
 .tai{background:#22c55e;}
 .xiu{background:#38bdf8;}
 .disabled{opacity:.5;pointer-events:none;}
 
-/* Dice animation */
+/* Dice container 3D */
 .dice-container{
   position: relative;
   width: 120px;
   height: 120px;
   margin: auto;
+  perspective: 600px;
 }
 .dice{
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 40px;
+  left: 40px;
   width: 40px;
   height: 40px;
   font-size: 30px;
-  transition: transform 0.2s;
+  transition: transform 0.3s ease-out;
 }
 .countdown{
   font-size: 14px;
   margin-top: 4px;
   color: #facc15;
 }
+/* Highlight winner */
+.winner{
+  text-shadow: 0 0 8px #facc15;
+  color: #facc15;
+  font-weight: 800;
+}
+.loser{
+  opacity: 0.3;
+}
 </style>
 </head>
 <body>
 
 <div class="app">
-  <h1>🎲 TÀI XỈU</h1>
+  <h1>🎲 TÀI XỈU 3D</h1>
 
   <div class="card center">
     <div class="balance">Xu: <span id="balance">1,000,000,000</span></div>
@@ -76,113 +83,137 @@ button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;}
       <div id="dice2" class="dice">🎲</div>
       <div id="dice3" class="dice">🎲</div>
     </div>
-    <div id="countdown" class="countdown">10s</div>
+    <div id="countdown" class="countdown">5s</div>
     <div id="result" class="small"></div>
     <div id="bot" class="bot">🤖 Bot dự đoán: chưa có dữ liệu</div>
+  </div>
+
+  <div class="card center">
+    <div class="row">
+      <button id="btnTai" class="tai">TÀI</button>
+      <button id="btnXiu" class="xiu">XỈU</button>
+    </div>
   </div>
 
   <div class="card">
     <b>💰 Mức cược</b>
     <div class="row" style="margin-top:8px">
-      <button class="bet" onclick="setBet(1000)">1K</button>
-      <button class="bet" onclick="setBet(10000)">10K</button>
-      <button class="bet" onclick="setBet(50000)">50K</button>
-      <button class="bet" onclick="setBet(100000)">100K</button>
-      <button class="bet" onclick="setBet(500000)">500K</button>
-      <button class="bet" onclick="setBet(5000000)">5M</button>
-      <button class="bet" onclick="setBet(50000000)">50M</button>
+      <button class="bet" data-bet="1000">1K</button>
+      <button class="bet" data-bet="10000">10K</button>
+      <button class="bet" data-bet="50000">50K</button>
+      <button class="bet" data-bet="100000">100K</button>
+      <button class="bet" data-bet="500000">500K</button>
+      <button class="bet" data-bet="5000000">5M</button>
+      <button class="bet" data-bet="50000000">50M</button>
     </div>
     <div class="small">Đã chọn: <b id="betShow">—</b></div>
-  </div>
-
-  <div class="card">
-    <b>🎯 Chọn cửa (tự quay 10s)</b>
-    <div class="row" style="margin-top:8px">
-      <button class="tai" onclick="choose('TAI')">TÀI</button>
-      <button class="xiu" onclick="choose('XIU')">XỈU</button>
-    </div>
   </div>
 </div>
 
 <script>
-let balance = 1000000000; // 1 tỷ
-let bet = 0;
-let choice = null;
-let rolling = false;
-let history = [];
+document.addEventListener("DOMContentLoaded", () => {
+  let balance = 1000000000;
+  let bet = 0;
+  let choice = null;
+  let rolling = false;
+  let history = [];
 
-const $ = id => document.getElementById(id);
+  const $ = id => document.getElementById(id);
+  const btnTai = $("btnTai");
+  const btnXiu = $("btnXiu");
+  const diceElems = ["dice1","dice2","dice3"].map(id => $(id));
 
-function setBet(v) {
-  bet = v;
-  $("betShow").innerText = v.toLocaleString();
-}
-
-function choose(c) {
-  if (rolling) return;
-  if (!bet || bet > balance) {
-    alert("Chọn mức cược hợp lệ");
-    return;
+  function setBet(v){
+    bet = v;
+    $("betShow").innerText = v.toLocaleString();
   }
-  choice = c;
-  startRoll();
-}
 
-function startRoll() {
-  rolling = true;
-  $("result").innerText = "Đang quay...";
-
-  // Bot dự đoán 100% đúng
-  let predicted = choice; 
-  $("bot").innerText = `🤖 Bot dự đoán ván tới: ${predicted} (100%)`;
-
-  let diceElems = ["dice1","dice2","dice3"].map(id => $(id));
-  let countdown = $("countdown");
-  let seconds = 10;
-
-  let interval = setInterval(() => {
-    seconds--;
-    countdown.innerText = `${seconds}s`;
-
-    // Xúc xắc lắc lung tung
-    diceElems.forEach(d => {
-      let x = Math.random() * 80;
-      let y = Math.random() * 80;
-      d.style.transform = `translate(${x}px, ${y}px) rotate(${Math.random()*360}deg)`;
-      d.innerText = "🎲";
-    });
-
-    if(seconds <= 0) {
-      clearInterval(interval);
-      finishRoll();
+  function choose(c){
+    if(rolling) return;
+    if(!bet || bet>balance){
+      alert("Chọn mức cược hợp lệ");
+      return;
     }
-  }, 1000);
-}
+    choice = c;
+    startRoll();
+  }
 
-function finishRoll() {
-  let d1 = 1 + Math.floor(Math.random() * 6);
-  let d2 = 1 + Math.floor(Math.random() * 6);
-  let d3 = 1 + Math.floor(Math.random() * 6);
-  let total = d1 + d2 + d3;
-  let rs = total >= 11 ? "TAI" : "XIU";
+  function startRoll(){
+    rolling = true;
+    $("result").innerText = "Đang quay...";
+    $("bot").innerText = `🤖 Bot dự đoán ván tới: ${choice} (100%)`;
 
-  // Hiển thị xúc xắc cuối
-  $("dice1").innerText = "🎲 " + d1;
-  $("dice2").innerText = "🎲 " + d2;
-  $("dice3").innerText = "🎲 " + d3;
+    btnTai.classList.remove("winner","loser");
+    btnXiu.classList.remove("winner","loser");
 
-  $("result").innerText = `Tổng ${total} → ${rs === "TAI" ? "TÀI" : "XỈU"}`;
+    let countdown = $("countdown");
+    let seconds = 5;
+    let interval = setInterval(()=>{
+      seconds--;
+      countdown.innerText = `${seconds}s`;
 
-  // Cập nhật số dư
-  balance += (rs === choice ? bet : -bet);
-  $("balance").innerText = balance.toLocaleString();
+      diceElems.forEach(d=>{
+        let rx = Math.random()*720;
+        let ry = Math.random()*720;
+        let tx = Math.random()*80;
+        let ty = Math.random()*80;
+        d.style.transform = `translate(${tx}px,${ty}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
 
-  history.push(rs);
-  if (history.length > 20) history.shift();
-  rolling = false;
-  choice = null;
-  $("countdown").innerText = "";
-}
+      if(seconds<=0){
+        clearInterval(interval);
+        finishRoll();
+      }
+    },200);
+  }
+
+  function finishRoll(){
+    let d1 = 1+Math.floor(Math.random()*6);
+    let d2 = 1+Math.floor(Math.random()*6);
+    let d3 = 1+Math.floor(Math.random()*6);
+    let total = d1+d2+d3;
+    let rs = total>=11?"TAI":"XIU";
+
+    diceElems[0].innerText = "🎲 "+d1;
+    diceElems[1].innerText = "🎲 "+d2;
+    diceElems[2].innerText = "🎲 "+d3;
+    diceElems.forEach(d=> d.style.transform="translate(0,0) rotateX(0deg) rotateY(0deg)");
+
+    $("result").innerText = `Tổng ${total} → ${rs==="TAI"?"TÀI":"XỈU"}`;
+
+    if(rs===choice){
+      balance += bet*2;
+    } else {
+      balance -= bet;
+    }
+    $("balance").innerText = balance.toLocaleString();
+
+    if(rs==="TAI"){
+      btnTai.classList.add("winner");
+      btnXiu.classList.add("loser");
+    } else {
+      btnXiu.classList.add("winner");
+      btnTai.classList.add("loser");
+    }
+
+    history.push(rs);
+    if(history.length>20) history.shift();
+    rolling=false;
+    choice=null;
+    $("countdown").innerText="";
+  }
+
+  // Gán sự kiện cho TÀI/XỈU
+  btnTai.addEventListener("click",()=>choose("TAI"));
+  btnXiu.addEventListener("click",()=>choose("XIU"));
+
+  // Gán sự kiện cho nút cược
+  document.querySelectorAll(".bet").forEach(btn=>{
+    btn.addEventListener("click",()=>setBet(Number(btn.dataset.bet)));
+  });
+
+});
 </script>
+
 </body>
 </html>
