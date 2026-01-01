@@ -3,46 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tài Xỉu VIP 2026 – Mở Bát</title>
+<title>Tài Xỉu VIP 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:sans-serif;background:#111;color:#fff;}
-.app{max-width:600px;margin:0 auto;min-height:100vh;padding:10px;position:relative;}
-.top-bar{display:flex;justify-content:space-between;padding:10px;background:rgba(0,0,0,0.6);border-bottom:2px solid gold;font-weight:bold;}
-.bead-road{display:flex;gap:4px;overflow-x:auto;padding:5px;background:rgba(0,0,0,0.3);margin:5px 0;border-radius:20px;align-items:center;height:24px;}
-.dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
-.dot.tai{background:gold;border:1px solid #fff;}
-.dot.xiu{background:#fff;border:1px solid #fff;}
-.game-board{position:relative;margin-top:20px;}
-.board-frame{background:rgba(0,0,0,0.6);border:2px solid gold;border-radius:40px;padding:10px;}
-.session-info{text-align:center;font-size:12px;color:#aaa;margin-bottom:5px;}
-.main-display{display:flex;justify-content:space-between;align-items:center;position:relative;height:220px;}
-.gate{width:32%;text-align:center;display:flex;flex-direction:column;justify-content:center;height:100%;transition:0.3s;}
-.gate-title{font-size:42px;font-weight:900;text-shadow:0 2px 0 #000;}
-.gate-tai .gate-title{color:gold;}
-.gate-xiu .gate-title{color:#fff;}
-.gate.winner .gate-title{text-shadow:0 0 20px #fff,0 0 40px gold;filter:brightness(1.5);}
-.gate.loser{opacity:0.3;filter:grayscale(1);}
-.bowl-container{width:140px;height:140px;background:radial-gradient(circle at 30% 30%,#4a0e0e,#000);border-radius:50%;border:4px solid gold;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;justify-content:center;align-items:center;perspective:600px;z-index:10;}
-.dice-wrap{position:relative;width:80px;height:80px;}
-.dice{position:absolute;width:36px;height:36px;background:#fff;border-radius:6px;display:flex;justify-content:center;align-items:center;font-size:24px;font-weight:bold;color:#d00;transition:transform 0.3s ease-out;}
-.countdown-circle{position:absolute;top:-15px;background:#000;border:2px solid gold;color:gold;width:30px;height:30px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-weight:bold;font-size:14px;z-index:20;}
-.total-score{position:absolute;bottom:-15px;background:#d00;color:#fff;padding:2px 10px;border-radius:10px;font-weight:bold;font-size:12px;border:1px solid #fff;display:none;}
-.cover-circle{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;color:#fff;font-weight:bold;font-size:14px;cursor:pointer;z-index:50;transition:0.3s;}
-.control-panel{margin-top:15px;}
-.status-text{text-align:center;color:gold;font-style:italic;margin-bottom:10px;height:20px;}
-.money-bar{background:#000;border:1px solid gold;padding:8px 15px;border-radius:20px;display:flex;justify-content:space-between;font-weight:bold;color:gold;font-size:18px;margin-bottom:15px;}
-.btn{padding:6px 10px;background:gold;color:#111;border:none;border-radius:6px;cursor:pointer;font-weight:bold;margin-top:5px;}
+:root {
+    --gold-dark: #b8860b;
+    --gold-light: #fceabb;
+    --gold-mid: #f8b500;
+}
+
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: url('https://img.freepik.com/free-vector/dark-red-background-with-polygonal-shapes_1017-23136.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    overflow-x: hidden;
+    user-select: none;
+}
+
+.app {
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+/* HEADER */
+.top-bar {
+    padding: 10px;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--gold-dark);
+}
+
+/* LỊCH SỬ */
+.bead-road {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 5px;
+    background: rgba(0,0,0,0.3);
+    margin: 0 10px;
+    border-radius: 20px;
+    height: 24px;
+    align-items: center;
+}
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+.dot.tai { background: var(--gold-mid); border: 1px solid #fff; }
+.dot.xiu { background: #333; border: 1px solid #fff; }
+
+/* MAIN BOARD */
+.game-board {
+    position: relative;
+    margin-top: 20px;
+    padding: 0 10px;
+}
+.board-frame {
+    background: linear-gradient(180deg,#3e1e1e 0%,#1a0505 100%);
+    border: 2px solid var(--gold-dark);
+    border-radius: 40px;
+    padding: 10px;
+    box-shadow: 0 0 20px rgba(248,181,0,0.2), inset 0 0 30px rgba(0,0,0,0.8);
+    position: relative;
+}
+.session-info {
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+.main-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    height: 220px;
+}
+.gate {
+    width: 32%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.gate-title {
+    font-size: 42px;
+    font-weight: 900;
+    text-shadow: 0 2px 0 #000, 0 0 15px rgba(255,215,0,0.5);
+}
+.gate-tai .gate-title { color: var(--gold-mid);}
+.gate-xiu .gate-title { color: #fff;}
+.gate-info { margin-top: 10px; font-size: 11px; color: #ddd; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 4px;}
+.gate.active { transform: scale(1.05); }
+.gate.winner .gate-title { text-shadow: 0 0 20px #fff,0 0 40px var(--gold-mid); filter: brightness(1.5);}
+.gate.loser { opacity:0.3; filter: grayscale(1);}
+
+/* BÁT XÚC XẮC */
+.bowl-container {
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle at 30% 30%,#4a0e0e,#000);
+    border-radius: 50%;
+    border: 4px solid var(--gold-dark);
+    box-shadow: inset 0 0 20px #000,0 10px 20px rgba(0,0,0,0.5);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 10;
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    perspective: 600px;
+}
+.dice-wrap { position: relative; width: 80px; height: 80px;}
+.dice {
+    position: absolute;
+    width:36px; height:36px;
+    background:#fff; border-radius:6px;
+    box-shadow: inset 0 0 5px #ccc, 2px 2px 5px rgba(0,0,0,0.5);
+    display:flex; justify-content:center; align-items:center;
+    font-size:24px; font-weight:bold; color:#d00;
+    transition: transform 0.3s ease-out;
+}
+.countdown-circle {
+    position:absolute; top:-15px;
+    background:#000; border:2px solid var(--gold-mid);
+    color:var(--gold-mid); width:30px; height:30px; border-radius:50%;
+    display:flex; justify-content:center; align-items:center; font-weight:bold; z-index:20; font-size:14px;
+}
+.total-score {
+    position:absolute; bottom:-15px; background:#d00;
+    color:#fff; padding:2px 10px; border-radius:10px; font-weight:bold; font-size:12px; border:1px solid #fff;
+    display:none;
+}
+.bowl-cover {
+    position:absolute; top:0; left:0; width:100%; height:100%; border-radius:50%;
+    background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center;
+    color:#fff; font-weight:bold; font-size:16px; cursor:pointer; z-index:15;
+}
+
+/* CONTROLS */
+.control-panel {margin-top:15px; padding:10px;}
+.status-text {text-align:center; color: var(--gold-light); font-style:italic; margin-bottom:10px; height:20px;}
+.money-bar {background:#000; border:1px solid var(--gold-dark); padding:8px 15px; border-radius:20px; display:flex; justify-content:space-between; font-weight:bold; color: var(--gold-mid); font-size:18px; margin-bottom:15px;}
+.bet-grid {display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:10px;}
+.chip {background: url('https://www.transparenttextures.com/patterns/dark-leather.png'), linear-gradient(to bottom, #d4af37, #8a6e2f); border:2px dashed #fff; border-radius:50%; height:50px; width:50px; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; color:#3e1e1e; cursor:pointer; box-shadow:0 4px 6px rgba(0,0,0,0.5); transition:0.1s;}
+.chip:active {transform: scale(0.9);}
+.chip.selected {border:2px solid #f00; box-shadow:0 0 10px #f00;}
+.action-row {display:flex; gap:10px; margin-top:10px;}
+.btn-action {flex:1; padding:12px; border:none; border-radius:8px; font-weight:bold; text-transform:uppercase; cursor:pointer; color:#fff;}
+.btn-bet {background: linear-gradient(to right,#b91d1d,#ef4444); box-shadow:0 4px 0 #7f1d1d;}
+.btn-cancel {background:#333; box-shadow:0 4px 0 #000;}
+.btn-bet:active,.btn-cancel:active {transform:translateY(4px); box-shadow:none;}
+.pulse {animation: pulse-gold 1.5s infinite;}
+@keyframes pulse-gold {0%{box-shadow:0 0 0 0 rgba(248,181,0,0.7);} 70%{box-shadow:0 0 0 10px rgba(248,181,0,0);} 100%{box-shadow:0 0 0 0 rgba(248,181,0,0);}}
 </style>
 </head>
 <body>
+
 <div class="app">
-    <div class="top-bar">VMH <span>TK: User_9999</span></div>
-    <div class="bead-road" id="beadRoad"><span style="font-size:10px;color:#aaa;margin-right:5px;">CẦU:</span></div>
+    <div class="top-bar">
+        <div style="font-weight:bold; color:var(--gold-mid)">VMH</div>
+        <div style="font-size:12px;">TK: <span style="color:#fff">User_9999</span></div>
+    </div>
+
+    <div class="bead-road" id="beadRoad"><span style="font-size:10px; color:#aaa; margin-right:5px;">CẦU:</span></div>
+
     <div class="game-board">
         <div class="board-frame">
-            <div class="session-info">PHIÊN #<span id="sessionID">1</span></div>
+            <div class="session-info">PHIÊN #<span id="sessionID">934042</span></div>
             <div class="main-display">
-                <div class="gate gate-tai" id="areaTai"><div class="gate-title">TÀI</div></div>
+                <div class="gate gate-tai" id="areaTai" onclick="selectGate('TAI')">
+                    <div class="gate-title">TÀI</div>
+                    <div class="gate-info"><div>👥 <span id="usersTai">120</span></div><div style="color:#facc15">💰 <span id="moneyTai">0</span></div></div>
+                </div>
+                <div class="gate gate-xiu" id="areaXiu" onclick="selectGate('XIU')">
+                    <div class="gate-title">XỈU</div>
+                    <div class="gate-info"><div>👥 <span id="usersXiu">85</span></div><div style="color:#87ceeb">💰 <span id="moneyXiu">0</span></div></div>
+                </div>
                 <div class="bowl-container">
                     <div class="countdown-circle" id="countdown">60</div>
                     <div class="dice-wrap" id="diceWrap">
@@ -50,16 +205,36 @@ body{margin:0;font-family:sans-serif;background:#111;color:#fff;}
                         <div id="dice2" class="dice">?</div>
                         <div id="dice3" class="dice">?</div>
                     </div>
+                    <div class="bowl-cover" id="bowlCover" onclick="openBowl()">MỞ BÁT</div>
                     <div class="total-score" id="scoreLabel">10</div>
-                    <div class="cover-circle" id="coverCircle">Mở ngay!<br><button class="btn" id="btnSkip">Bỏ qua</button></div>
                 </div>
-                <div class="gate gate-xiu" id="areaXiu"><div class="gate-title">XỈU</div></div>
             </div>
         </div>
     </div>
+
     <div class="control-panel">
-        <div class="status-text" id="statusText">Tự động chơi VIP</div>
-        <div class="money-bar">SỐ DƯ:<span id="balanceDisplay">1.000.000.000.000</span> VNĐ</div>
+        <div class="status-text" id="statusText">Vui lòng đặt cược...</div>
+        <div class="money-bar">
+            <span>SỐ DƯ:</span>
+            <span id="balanceDisplay">1,000,000,000,000</span> <span style="font-size:12px;color:#888">VNĐ</span>
+        </div>
+        <div class="bet-grid">
+            <div class="chip" onclick="setChip(1000)">1K</div>
+            <div class="chip" onclick="setChip(10000)">10K</div>
+            <div class="chip" onclick="setChip(50000)">50K</div>
+            <div class="chip" onclick="setChip(100000)">100K</div>
+            <div class="chip" onclick="setChip(500000)">500K</div>
+            <div class="chip" onclick="setChip(1000000)">1M</div>
+            <div class="chip" onclick="setChip(5000000)">5M</div>
+            <div class="chip" onclick="setChip('ALL')">ALL</div>
+        </div>
+        <div class="action-row">
+            <button class="btn-action btn-cancel" onclick="cancelBet()">Hủy</button>
+            <button class="btn-action btn-bet" id="btnConfirm" onclick="confirmBet()">ĐẶT CƯỢC</button>
+        </div>
+        <div style="text-align:center; margin-top:10px; font-size:12px; color:#aaa">
+            Cược hiện tại: <span id="currentBetDisplay" style="color:#fff; font-weight:bold">0</span> - Cửa: <span id="currentGateDisplay">---</span>
+        </div>
     </div>
 </div>
 
@@ -68,70 +243,65 @@ body{margin:0;font-family:sans-serif;background:#111;color:#fff;}
 
 <script>
 let balance = 1000000000000;
-let diceChars=["⚀","⚁","⚂","⚃","⚄","⚅"];
+let currentBet = 0;
+let selectedGate = null;
+let isRolling = false;
+let diceChars = ["⚀","⚁","⚂","⚃","⚄","⚅"];
 const el=id=>document.getElementById(id);
 const diceElems=[el('dice1'),el('dice2'),el('dice3')];
-let isRolling=false;
+let roundTimer=null;
+let bowlTimer=null;
 
+// FAKE HISTORY
+for(let i=0;i<10;i++){addHistoryDot(Math.random()>.5?'TAI':'XIU');}
 updateBalance();
-startAutoGame();
+startAutoRound();
 
-function updateBalance(){ el('balanceDisplay').innerText=balance.toLocaleString('vi-VN'); }
-function addHistoryDot(type){ let d=document.createElement('div'); d.className='dot '+type.toLowerCase(); el('beadRoad').appendChild(d); el('beadRoad').scrollLeft=el('beadRoad').scrollWidth; }
+function updateBalance(){el('balanceDisplay').innerText=balance.toLocaleString('vi-VN');}
+function setChip(amount){if(isRolling) return;if(amount==='ALL') amount=balance; currentBet=amount; el('currentBetDisplay').innerText=currentBet.toLocaleString('vi-VN'); document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected')); event.target.classList.add('selected');}
+function selectGate(gate){if(isRolling) return; selectedGate=gate; el('areaTai').style.opacity=gate==='TAI'?'1':'0.5'; el('areaXiu').style.opacity=gate==='XIU'?'1':'0.5'; el('areaTai').style.border=gate==='TAI'?'2px solid gold':'none'; el('areaXiu').style.border=gate==='XIU'?'2px solid gold':'none'; el('currentGateDisplay').innerText=gate;}
+function cancelBet(){if(isRolling) return; currentBet=0; selectedGate=null; el('currentBetDisplay').innerText="0"; el('currentGateDisplay').innerText="---"; el('areaTai').style.opacity='1'; el('areaXiu').style.opacity='1'; el('areaTai').style.border='none'; el('areaXiu').style.border='none'; el('statusText').innerText="Đã hủy cược";}
+function confirmBet(){if(isRolling) return; if(!selectedGate){alert("Chọn cửa!"); return;} if(currentBet<=0){alert("Chọn tiền!");return;} if(currentBet>balance){alert("Số dư không đủ!");return;} balance-=currentBet; updateBalance(); el('statusText').innerText=`Đã cược ${currentBet.toLocaleString()} vào ${selectedGate}. Chờ quay...`; el('btnConfirm').classList.add('disabled'); startRound();}
 
-function startAutoGame(){ runRound(); setInterval(runRound,70000); }
+// --- AUTO ROUND ---
+function startAutoRound(){
+    roundTimer=setInterval(()=>{
+        if(!isRolling) startRound();
+    },60000); // 60s tự quay
+}
 
-function runRound(){
-    if(isRolling) return;
+function startRound(){
     isRolling=true;
-    el('statusText').innerText='Đang quay phiên mới...';
+    el('bowlCover').style.display='none';
     el('scoreLabel').style.display='none';
-    el('coverCircle').style.display='none';
-    let timeLeft=60; el('countdown').innerText=timeLeft;
-    el('sfxRoll').currentTime=0; el('sfxRoll').play();
-
-    let interval=setInterval(()=>{
-        timeLeft--;
-        el('countdown').innerText=timeLeft;
+    el('countdown').innerText='60';
+    el('sfxRoll').play();
+    let timeLeft=5;
+    let rollInterval=setInterval(()=>{
         diceElems.forEach(d=>{
             d.innerText=diceChars[Math.floor(Math.random()*6)];
             let x=Math.random()*20-10; let y=Math.random()*20-10;
             d.style.transform=`translate(${x}px,${y}px) rotate(${Math.random()*360}deg)`;
         });
-        if(timeLeft<=0){ clearInterval(interval); showCover(); }
+        el('countdown').innerText=timeLeft;
+        timeLeft--;
+        if(timeLeft<0){clearInterval(rollInterval); revealBowl();}
+    },150);
+}
+
+function revealBowl(){
+    el('bowlCover').style.display='flex';
+    let countdown=5;
+    el('bowlCover').innerText=`MỞ BÁT (${countdown})`;
+    bowlTimer=setInterval(()=>{
+        countdown--;
+        if(countdown>0){el('bowlCover').innerText=`MỞ BÁT (${countdown})`;}
+        else{clearInterval(bowlTimer); openBowl();}
     },1000);
 }
 
-function showCover(){
-    // Che kết quả 5s
-    el('coverCircle').style.display='flex';
-    let coverTime=5;
-    let coverInterval=setInterval(()=>{
-        coverTime--;
-        if(coverTime<=0){ clearInterval(coverInterval); revealResult(); }
-    },1000);
-}
-
-// Mở khi click
-el('coverCircle').addEventListener('click',revealResult);
-el('btnSkip').addEventListener('click',()=>{ revealResult(); });
-
-function revealResult(){
-    el('coverCircle').style.display='none';
+function openBowl(){
+    clearInterval(bowlTimer); el('bowlCover').style.display='none';
+    // kết quả
     let results=[1,2,3].map(()=>Math.floor(Math.random()*6)+1);
-    let total=results.reduce((a,b)=>a+b,0);
-    let resultType=total>=11?'TAI':'XIU';
-    const pos=[{x:0,y:-20},{x:-20,y:15},{x:20,y:15}];
-    diceElems.forEach((d,i)=>{
-        d.innerText=diceChars[results[i]-1];
-        d.style.transform=`translate(${pos[i].x}px,${pos[i].y}px) rotate(0deg)`;
-    });
-    el('scoreLabel').innerText=total; el('scoreLabel').style.display='block';
-    addHistoryDot(resultType);
-    el('statusText').innerText=`Kết quả: ${resultType} - Tổng: ${total} | Phiên mới sau 10s`;
-    isRolling=false;
-    el('sessionID').innerText=Number(el('sessionID').innerText)+1;
-}
-</script>
-</body>
-</html>
+    let
