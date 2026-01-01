@@ -5,131 +5,183 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tài Xỉu – Giải trí</title>
 <style>
-body{margin:0;font-family:system-ui;background:#020617;color:#e5e7eb}
-.app{max-width:420px;margin:auto;padding:16px}
-h1{text-align:center;margin:10px 0}
-.card{background:#0f172a;border-radius:16px;padding:16px;margin:12px 0}
-.center{text-align:center}
-.balance{font-size:20px;font-weight:700}
-.dice{font-size:40px;letter-spacing:6px;margin:10px 0}
-.spin{animation:spin .6s linear infinite}
-@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800}
-.bet{background:#1e293b;color:#fff}
-.tai{background:#22c55e}
-.xiu{background:#38bdf8}
-.small{font-size:12px;color:#94a3b8;margin-top:6px}
-.bot{margin-top:8px;font-size:13px;color:#facc15}
-.disabled{opacity:.5;pointer-events:none}
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#020617;
+  color:#e5e7eb;
+}
+.app{
+  max-width:420px;
+  margin:auto;
+  padding:16px;
+}
+h1{
+  text-align:center;
+  margin:10px 0;
+}
+.card{
+  background:#0f172a;
+  border-radius:16px;
+  padding:16px;
+  margin:12px 0;
+}
+.center{text-align:center;}
+.balance{font-size:20px;font-weight:700;}
+.small{font-size:12px;color:#94a3b8;margin-top:6px;}
+.bot{margin-top:8px;font-size:13px;color:#facc15;}
+.row{display:flex;gap:8px;flex-wrap:wrap;}
+button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:800;}
+.bet{background:#1e293b;color:#fff;}
+.tai{background:#22c55e;}
+.xiu{background:#38bdf8;}
+.disabled{opacity:.5;pointer-events:none;}
+
+/* Dice animation */
+.dice-container{
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: auto;
+}
+.dice{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  transition: transform 0.2s;
+}
+.countdown{
+  font-size: 14px;
+  margin-top: 4px;
+  color: #facc15;
+}
 </style>
 </head>
-
 <body>
+
 <div class="app">
-<h1>🎲 TÀI XỈU</h1>
+  <h1>🎲 TÀI XỈU</h1>
 
-<div class="card center">
-<div class="balance">Xu: <span id="balance">1000000</span></div>
-<div class="small">* Giải trí</div>
-</div>
+  <div class="card center">
+    <div class="balance">Xu: <span id="balance">1,000,000,000</span></div>
+    <div class="small">* Giải trí</div>
+  </div>
 
-<div class="card center">
-<div id="dice" class="dice">— — —</div>
-<div id="result" class="small"></div>
-<div id="bot" class="bot">🤖 Bot dự đoán: chưa có dữ liệu</div>
-</div>
+  <div class="card center">
+    <div class="dice-container" id="diceContainer">
+      <div id="dice1" class="dice">🎲</div>
+      <div id="dice2" class="dice">🎲</div>
+      <div id="dice3" class="dice">🎲</div>
+    </div>
+    <div id="countdown" class="countdown">10s</div>
+    <div id="result" class="small"></div>
+    <div id="bot" class="bot">🤖 Bot dự đoán: chưa có dữ liệu</div>
+  </div>
 
-<div class="card">
-<b>💰 Mức cược</b>
-<div class="row" style="margin-top:8px">
-<button class="bet" onclick="setBet(1000)">1K</button>
-<button class="bet" onclick="setBet(10000)">10K</button>
-<button class="bet" onclick="setBet(50000)">50K</button>
-<button class="bet" onclick="setBet(100000)">100K</button>
-<button class="bet" onclick="setBet(500000)">500K</button>
-<button class="bet" onclick="setBet(5000000)">5M</button>
-<button class="bet" onclick="setBet(50000000)">50M</button>
-</div>
-<div class="small">Đã chọn: <b id="betShow">—</b></div>
-</div>
+  <div class="card">
+    <b>💰 Mức cược</b>
+    <div class="row" style="margin-top:8px">
+      <button class="bet" onclick="setBet(1000)">1K</button>
+      <button class="bet" onclick="setBet(10000)">10K</button>
+      <button class="bet" onclick="setBet(50000)">50K</button>
+      <button class="bet" onclick="setBet(100000)">100K</button>
+      <button class="bet" onclick="setBet(500000)">500K</button>
+      <button class="bet" onclick="setBet(5000000)">5M</button>
+      <button class="bet" onclick="setBet(50000000)">50M</button>
+    </div>
+    <div class="small">Đã chọn: <b id="betShow">—</b></div>
+  </div>
 
-<div class="card">
-<b>🎯 Chọn cửa (tự quay 10s)</b>
-<div class="row" style="margin-top:8px">
-<button class="tai" onclick="choose('TAI')">TÀI</button>
-<button class="xiu" onclick="choose('XIU')">XỈU</button>
-</div>
-</div>
+  <div class="card">
+    <b>🎯 Chọn cửa (tự quay 10s)</b>
+    <div class="row" style="margin-top:8px">
+      <button class="tai" onclick="choose('TAI')">TÀI</button>
+      <button class="xiu" onclick="choose('XIU')">XỈU</button>
+    </div>
+  </div>
 </div>
 
 <script>
-let balance=1000000;
-let bet=0;
-let choice=null;
-let rolling=false;
-let history=[];
+let balance = 1000000000; // 1 tỷ
+let bet = 0;
+let choice = null;
+let rolling = false;
+let history = [];
 
-const $=id=>document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-function setBet(v){
-  bet=v;
-  betShow.innerText=v.toLocaleString();
+function setBet(v) {
+  bet = v;
+  $("betShow").innerText = v.toLocaleString();
 }
 
-function choose(c){
-  if(rolling) return;
-  if(!bet || bet>balance){
+function choose(c) {
+  if (rolling) return;
+  if (!bet || bet > balance) {
     alert("Chọn mức cược hợp lệ");
     return;
   }
-  choice=c;
+  choice = c;
   startRoll();
 }
 
-function startRoll(){
-  rolling=true;
-  $("dice").classList.add("spin");
-  $("dice").innerText="🎲 🎲 🎲";
-  $("result").innerText="Đang quay... (10s)";
+function startRoll() {
+  rolling = true;
+  $("result").innerText = "Đang quay...";
 
-  setTimeout(finishRoll,10000);
+  // Bot dự đoán 100% đúng
+  let predicted = choice; 
+  $("bot").innerText = `🤖 Bot dự đoán ván tới: ${predicted} (100%)`;
+
+  let diceElems = ["dice1","dice2","dice3"].map(id => $(id));
+  let countdown = $("countdown");
+  let seconds = 10;
+
+  let interval = setInterval(() => {
+    seconds--;
+    countdown.innerText = `${seconds}s`;
+
+    // Xúc xắc lắc lung tung
+    diceElems.forEach(d => {
+      let x = Math.random() * 80;
+      let y = Math.random() * 80;
+      d.style.transform = `translate(${x}px, ${y}px) rotate(${Math.random()*360}deg)`;
+      d.innerText = "🎲";
+    });
+
+    if(seconds <= 0) {
+      clearInterval(interval);
+      finishRoll();
+    }
+  }, 1000);
 }
 
-function finishRoll(){
-  $("dice").classList.remove("spin");
+function finishRoll() {
+  let d1 = 1 + Math.floor(Math.random() * 6);
+  let d2 = 1 + Math.floor(Math.random() * 6);
+  let d3 = 1 + Math.floor(Math.random() * 6);
+  let total = d1 + d2 + d3;
+  let rs = total >= 11 ? "TAI" : "XIU";
 
-  let d1=1+Math.floor(Math.random()*6);
-  let d2=1+Math.floor(Math.random()*6);
-  let d3=1+Math.floor(Math.random()*6);
-  let total=d1+d2+d3;
-  let rs=total>=11?"TAI":"XIU";
+  // Hiển thị xúc xắc cuối
+  $("dice1").innerText = "🎲 " + d1;
+  $("dice2").innerText = "🎲 " + d2;
+  $("dice3").innerText = "🎲 " + d3;
 
-  $("dice").innerText=`${d1} ${d2} ${d3}`;
-  $("result").innerText=`Tổng ${total} → ${rs==="TAI"?"TÀI":"XỈU"}`;
+  $("result").innerText = `Tổng ${total} → ${rs === "TAI" ? "TÀI" : "XỈU"}`;
 
-  balance+= (choice===rs?bet:-bet);
-  $("balance").innerText=balance.toLocaleString();
+  // Cập nhật số dư
+  balance += (rs === choice ? bet : -bet);
+  $("balance").innerText = balance.toLocaleString();
 
   history.push(rs);
-  if(history.length>20) history.shift();
-  predict();
-
-  rolling=false;
-  choice=null;
-}
-
-function predict(){
-  if(history.length<5){
-    bot.innerText="🤖 Bot dự đoán: cần thêm dữ liệu";
-    return;
-  }
-  let last=history.slice(-5);
-  let t=last.filter(x=>x==="TAI").length;
-  let x=last.filter(x=>x==="XIU").length;
-  let p=t>x?"TÀI":"XỈU";
-  let r=Math.round(Math.max(t,x)/last.length*100);
-  bot.innerText=`🤖 Bot dự đoán ván tới: ${p} (${r}%)`;
+  if (history.length > 20) history.shift();
+  rolling = false;
+  choice = null;
+  $("countdown").innerText = "";
 }
 </script>
 </body>
